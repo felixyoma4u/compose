@@ -11,6 +11,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -81,7 +82,9 @@ fun MessageCard(message: ChatMessage) {
                 shape = MaterialTheme.shapes.medium,
                 elevation = 1.dp,
                 color = surfaceColor,
-                modifier = Modifier.animateContentSize().padding(1.dp)
+                modifier = Modifier
+                    .animateContentSize()
+                    .padding(1.dp)
             ) {
                 Text(
                     text = message.message,
@@ -97,9 +100,17 @@ fun MessageCard(message: ChatMessage) {
 
 @Composable
 fun Conversion(messages: List<ChatMessage>) {
-    LazyColumn {
+    val lazyListState = rememberLazyListState()
+
+    LazyColumn(
+        state = lazyListState
+    ) {
         messages.map { item { MessageCard(it) } }
     }
+
+    LaunchedEffect(Unit, block = {
+        lazyListState.animateScrollToItem(messages.size - 1)
+    })
 }
 
 
